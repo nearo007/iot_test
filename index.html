@@ -58,6 +58,21 @@
   #theme-toggle:focus-visible { outline:3px solid var(--blue); outline-offset:3px; }
   #topics-toggle { position:fixed; top:14px; right:14px; z-index:11; border:1px solid var(--line); border-radius:999px; padding:9px 14px; background:var(--surface); color:var(--ink); font:600 14px Arial,Helvetica,sans-serif; box-shadow:0 2px 10px #0003; cursor:pointer; }
   #topics-toggle:hover, #topics-toggle:focus-visible { border-color:var(--blue); }
+  #search-toggle { position:fixed; top:14px; left:50%; z-index:11; transform:translateX(-50%); width:38px; height:38px; display:grid; place-items:center; border:1px solid var(--line); border-radius:50%; background:var(--surface); color:var(--ink); box-shadow:0 2px 10px #0003; cursor:pointer; }
+  #search-toggle:hover, #search-toggle:focus-visible { border-color:var(--blue); }
+  #search-toggle svg { width:18px; height:18px; }
+  #search-panel { position:fixed; top:60px; left:50%; z-index:12; transform:translateX(-50%); display:flex; align-items:center; gap:6px; width:min(520px, calc(100vw - 24px)); padding:8px; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:0 8px 28px #0004; }
+  #search-panel[hidden] { display:none; }
+  #page-search { min-width:0; flex:1; padding:9px 10px; border:1px solid var(--line); border-radius:7px; background:var(--page-bg); color:var(--ink); font:16px Arial,Helvetica,sans-serif; }
+  #search-panel button { border:1px solid var(--line); border-radius:7px; padding:8px 10px; background:var(--surface); color:var(--ink); font-size:14px; cursor:pointer; }
+  #search-panel button:hover, #search-panel button:focus-visible { border-color:var(--blue); }
+  #search-count { min-width:42px; color:var(--muted); font-size:12px; text-align:center; white-space:nowrap; }
+  .search-hit { border-radius:2px; background:#ffec99; color:#20252b; }
+  .search-hit.current { background:#ffb86c; outline:2px solid #ffb86c; }
+  :root[data-theme="dracula"] .search-hit { background:#bd93f9; color:#282a36; }
+  :root[data-theme="dracula"] .search-hit.current { background:#ff79c6; outline-color:#ff79c6; }
+  :root[data-theme="discreet"] .search-hit { background:#222; color:#aaa; }
+  :root[data-theme="discreet"] .search-hit.current { background:#333; outline-color:#555; }
   #topics-menu { position:fixed; top:58px; right:14px; z-index:11; width:min(290px, calc(100vw - 28px)); max-height:calc(100vh - 76px); overflow:auto; padding:7px; border:1px solid var(--line); border-radius:12px; background:var(--surface); box-shadow:0 8px 28px #0004; }
   #topics-menu[hidden] { display:none; }
   #topics-menu a { display:block; padding:10px 12px; border-radius:7px; color:var(--ink); text-decoration:none; }
@@ -78,13 +93,23 @@
   .fast { background:var(--fast-bg); border:2px solid var(--fast-border); padding:12px 18px; }
   .simple { background:var(--simple-bg); border:2px solid var(--simple-border); padding:14px 18px; }
   li { margin:5px 0; }
-  @media (max-width:700px) { main { margin:0; padding:72px 20px 32px; } #theme-toggle { top:10px; left:10px; } #topics-toggle { top:10px; right:10px; } #topics-menu { top:54px; right:10px; width:min(290px, calc(100vw - 20px)); } }
-  @media print { #theme-toggle, #topics-toggle, #topics-menu { display:none !important; } body { background:#fff; color:#20252b; } main { background:#fff; box-shadow:none; margin:0; max-width:none; padding:20px; } h2 { break-after:avoid; } table,pre,.priority,.fast { break-inside:avoid; } }
+  @media (max-width:700px) { main { margin:0; padding:72px 20px 32px; } #theme-toggle { top:10px; left:10px; } #topics-toggle { top:10px; right:10px; } #search-toggle { top:10px; } #search-panel { top:54px; } #topics-menu { top:54px; right:10px; width:min(290px, calc(100vw - 20px)); } }
+  @media print { #theme-toggle, #topics-toggle, #topics-menu, #search-toggle, #search-panel { display:none !important; } body { background:#fff; color:#20252b; } main { background:#fff; box-shadow:none; margin:0; max-width:none; padding:20px; } h2 { break-after:avoid; } table,pre,.priority,.fast { break-inside:avoid; } }
 </style>
 </head>
 <body>
 <button id="theme-toggle" type="button" aria-label="Alternar tema de cores">Tema: Claro</button>
+<button id="search-toggle" type="button" aria-label="Abrir pesquisa" title="Pesquisar (Ctrl+F / ⌘F)">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+</button>
 <button id="topics-toggle" type="button" aria-expanded="false" aria-controls="topics-menu">Tópicos ▾</button>
+<div id="search-panel" role="search" aria-label="Pesquisar no resumo" hidden>
+  <input id="page-search" type="search" placeholder="Buscar no resumo…" aria-label="Texto para pesquisar">
+  <span id="search-count" aria-live="polite">0/0</span>
+  <button id="search-prev" type="button" aria-label="Ocorrência anterior" title="Anterior">↑</button>
+  <button id="search-next" type="button" aria-label="Próxima ocorrência" title="Próxima">↓</button>
+  <button id="search-close" type="button" aria-label="Fechar pesquisa" title="Fechar">×</button>
+</div>
 <nav id="topics-menu" aria-label="Ir para um tópico" hidden>
   <a href="#explicacao-simples">Explicação simples</a>
   <a href="#placas">ESP32 × Arduino Uno</a>
@@ -237,6 +262,7 @@
     function setMenuOpen(isOpen) {
       button.setAttribute("aria-expanded", String(isOpen));
       menu.hidden = !isOpen;
+      if (isOpen) document.getElementById("search-close").click();
     }
     button.addEventListener("click", () => setMenuOpen(menu.hidden));
     menu.addEventListener("click", event => {
@@ -246,9 +272,105 @@
       if (!menu.hidden && !menu.contains(event.target) && event.target !== button) setMenuOpen(false);
     });
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !menu.hidden) {
         setMenuOpen(false);
         button.focus();
+      }
+    });
+  })();
+  (() => {
+    const toggle = document.getElementById("search-toggle");
+    const panel = document.getElementById("search-panel");
+    const input = document.getElementById("page-search");
+    const count = document.getElementById("search-count");
+    const content = document.querySelector("main");
+    const topicsMenu = document.getElementById("topics-menu");
+    let hits = [];
+    let current = -1;
+
+    function clearHighlights() {
+      content.querySelectorAll("mark.search-hit").forEach(mark => mark.replaceWith(document.createTextNode(mark.textContent)));
+      content.normalize();
+      hits = [];
+      current = -1;
+    }
+
+    function focusHit(index) {
+      if (!hits.length) return;
+      current = (index + hits.length) % hits.length;
+      hits.forEach((hit, i) => hit.classList.toggle("current", i === current));
+      hits[current].scrollIntoView({ behavior: "smooth", block: "center" });
+      count.textContent = `${current + 1}/${hits.length}`;
+    }
+
+    function search() {
+      clearHighlights();
+      const query = input.value.trim();
+      if (!query) {
+        count.textContent = "0/0";
+        return;
+      }
+      const escaped = Array.from(query, char => "\\^$.*+?()[]{}|".includes(char) ? "\\" + char : char).join("");
+      const matcher = new RegExp(escaped, "gi");
+      const walker = document.createTreeWalker(content, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node => {
+        const text = node.nodeValue;
+        matcher.lastIndex = 0;
+        if (!matcher.test(text)) return;
+        matcher.lastIndex = 0;
+        const fragment = document.createDocumentFragment();
+        let last = 0;
+        for (const match of text.matchAll(matcher)) {
+          fragment.append(document.createTextNode(text.slice(last, match.index)));
+          const mark = document.createElement("mark");
+          mark.className = "search-hit";
+          mark.textContent = match[0];
+          fragment.append(mark);
+          hits.push(mark);
+          last = match.index + match[0].length;
+        }
+        fragment.append(document.createTextNode(text.slice(last)));
+        node.replaceWith(fragment);
+      });
+      if (hits.length) focusHit(0);
+      else count.textContent = "0 resultados";
+    }
+
+    function openSearch() {
+      topicsMenu.hidden = true;
+      document.getElementById("topics-toggle").setAttribute("aria-expanded", "false");
+      panel.hidden = false;
+      input.focus();
+      input.select();
+    }
+
+    function closeSearch() {
+      panel.hidden = true;
+      input.value = "";
+      clearHighlights();
+      count.textContent = "0/0";
+    }
+
+    toggle.addEventListener("click", () => panel.hidden ? openSearch() : closeSearch());
+    input.addEventListener("input", search);
+    document.getElementById("search-prev").addEventListener("click", () => focusHit(current - 1));
+    document.getElementById("search-next").addEventListener("click", () => focusHit(current + 1));
+    document.getElementById("search-close").addEventListener("click", () => {
+      closeSearch();
+      toggle.focus();
+    });
+    document.addEventListener("keydown", event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "f") {
+        event.preventDefault();
+        openSearch();
+      } else if (event.key === "Escape" && !panel.hidden) {
+        closeSearch();
+        toggle.focus();
+      } else if (panel.hidden && event.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) {
+        event.preventDefault();
+        openSearch();
       }
     });
   })();
