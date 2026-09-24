@@ -27,6 +27,12 @@
     --fast-bg:#282a36; --fast-border:#50fa7b; --table-head:#44475a; --table-head-ink:#f8f8f2;
     --priority-border:#ffb86c; --quote-bg:#44475a; --quote-border:#8be9fd;
   }
+  :root[data-theme="dracula"] strong { color:#ff79c6; }
+  :root[data-theme="dracula"] table th { color:#8be9fd; }
+  :root[data-theme="dracula"] table td:first-child { color:#bd93f9; }
+  :root[data-theme="dracula"] .json-key { color:#8be9fd; }
+  :root[data-theme="dracula"] .json-string { color:#f1fa8c; }
+  :root[data-theme="dracula"] .json-number { color:#50fa7b; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--page-bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; line-height:1.45; transition:background-color .2s,color .2s; }
   main { max-width:980px; margin:28px auto; background:var(--surface); padding:42px 52px 56px; box-shadow:0 2px 18px #0002; }
@@ -117,10 +123,10 @@
 <h3>JSON</h3>
 <p>JSON é estruturado e legível, com pares chave/valor:</p>
 <pre>{
-  "dispositivo": "dht11-01",
-  "temperatura": 24.6,
-  "umidade": 58,
-  "timestamp": "2026-09-10T19:00:00Z"
+  <span class="json-key">"dispositivo"</span>: <span class="json-string">"dht11-01"</span>,
+  <span class="json-key">"temperatura"</span>: <span class="json-number">24.6</span>,
+  <span class="json-key">"umidade"</span>: <span class="json-number">58</span>,
+  <span class="json-key">"timestamp"</span>: <span class="json-string">"2026-09-10T19:00:00Z"</span>
 }</pre>
 <p>Ele padroniza a troca entre microcontrolador, Node-RED, nuvem e aplicações.</p>
 <h3>QoS — PRIORIDADE MÁXIMA</h3>
