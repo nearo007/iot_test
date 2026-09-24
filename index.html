@@ -27,12 +27,29 @@
     --fast-bg:#282a36; --fast-border:#50fa7b; --table-head:#44475a; --table-head-ink:#f8f8f2;
     --priority-border:#ffb86c; --quote-bg:#44475a; --quote-border:#8be9fd;
   }
+  :root[data-theme="discreet"] {
+    color-scheme:dark;
+    --blue:#777; --cyan:#000; --gold:#000; --ink:#777; --muted:#666; --line:#1a1a1a;
+    --page-bg:#000; --surface:#000; --stripe:#000; --code-bg:#000;
+    --pre-bg:#000; --pre-ink:#777; --simple-bg:#000; --simple-border:#1a1a1a;
+    --fast-bg:#000; --fast-border:#1a1a1a; --table-head:#000; --table-head-ink:#777;
+    --priority-border:#1a1a1a; --quote-bg:#000; --quote-border:#1a1a1a;
+  }
   :root[data-theme="dracula"] strong { color:#ff79c6; }
   :root[data-theme="dracula"] table th { color:#8be9fd; }
   :root[data-theme="dracula"] table td:first-child { color:#bd93f9; }
   :root[data-theme="dracula"] .json-key { color:#8be9fd; }
   :root[data-theme="dracula"] .json-string { color:#f1fa8c; }
   :root[data-theme="dracula"] .json-number { color:#50fa7b; }
+  :root[data-theme="discreet"] strong { color:inherit; font-weight:400; }
+  :root[data-theme="discreet"] .json-key,
+  :root[data-theme="discreet"] .json-string,
+  :root[data-theme="discreet"] .json-number { color:inherit; }
+  :root[data-theme="discreet"] main { box-shadow:none; }
+  :root[data-theme="discreet"] .meta { border-left-color:var(--line); }
+  :root[data-theme="discreet"] #theme-toggle,
+  :root[data-theme="discreet"] #topics-toggle,
+  :root[data-theme="discreet"] #topics-menu { box-shadow:none; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--page-bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; line-height:1.45; transition:background-color .2s,color .2s; }
   main { max-width:980px; margin:28px auto; background:var(--surface); padding:42px 52px 56px; box-shadow:0 2px 18px #0002; }
@@ -193,7 +210,8 @@
     const themes = [
       { id: "light", label: "Claro" },
       { id: "dark", label: "Escuro" },
-      { id: "dracula", label: "Dracula" }
+      { id: "dracula", label: "Dracula" },
+      { id: "discreet", label: "Discreto" }
     ];
     const button = document.getElementById("theme-toggle");
     let current = themes.findIndex(theme => theme.id === localStorage.getItem("iot-review-theme"));
