@@ -22,6 +22,7 @@
   pre { background:#172b3a; color:#f5fbff; padding:14px; border-radius:5px; overflow:auto; }
   blockquote { background:var(--cyan); border-left:5px solid #3294bd; margin:16px 0; padding:12px 16px; }
   .fast { background:#f0fbf4; border:2px solid #70b989; padding:12px 18px; }
+  .simple { background:#f7fbff; border:2px solid #76b5d2; padding:14px 18px; }
   li { margin:5px 0; }
   @media print { body { background:#fff; } main { box-shadow:none; margin:0; max-width:none; padding:20px; } h2 { break-after:avoid; } table,pre,.priority,.fast { break-inside:avoid; } }
 </style>
@@ -30,6 +31,30 @@
 <h1>Revisão para prova — IoT, ESP32, Arduino e Node-RED</h1>
 <p class="meta"><strong>Aluno:</strong> Leandro Araujo<br><strong>Base:</strong> APS 01 — comparação ESP32 × Arduino Uno; APS 02 — conceitos gerais de IoT.</p>
 <p>Os itens marcados como <strong>PRIORIDADE</strong> concentram as relações mais importantes para a prova.</p>
+
+<h2>Explicação em linguagem bem simples</h2>
+<div class="simple">
+<p>Imagine uma casa inteligente. Ela tem um <strong>sensor</strong>, que é como um termômetro: ele olha o que está acontecendo. O DHT11 mede a temperatura e a umidade do ar.</p>
+<p>O <strong>ESP32</strong> é como o cérebro da casa. Ele lê o sensor, prepara a informação e consegue conversar com a Internet pelo Wi-Fi ou pelo Bluetooth. Ele é rápido e tem bastante memória. O <strong>Arduino Uno</strong> também é um cérebro pequeno: é mais simples, ótimo para aprender e controlar coisas, mas não tem Internet sozinho e tem menos memória.</p>
+<p>Quando o ESP32 recebe uma medida, ele coloca tudo em uma mensagem organizada, chamada <strong>JSON</strong>. É como escrever: “o sensor DHT11-01 marcou 24,6 graus e 58% de umidade”.</p>
+<p>Para enviar essa mensagem, usamos o <strong>MQTT</strong>. Pense nele como o serviço de entrega de cartas:</p>
+<ul>
+  <li>o dispositivo é o <strong>publisher</strong>: escreve e envia a carta;</li>
+  <li>o <strong>broker</strong> é o carteiro central: recebe a carta e sabe quem quer recebê-la;</li>
+  <li>o <strong>subscriber</strong> é quem assina o assunto e recebe as cartas;</li>
+  <li>o <strong>tópico</strong> é o nome da caixa de correio, como <code>casa/sala01/temperatura</code>.</li>
+</ul>
+<p>Assim, o sensor não precisa conhecer cada pessoa que quer ver a temperatura. Ele só entrega ao broker, e o broker distribui.</p>
+<p>O <strong>QoS</strong> diz o quanto queremos ter certeza de que a carta chegou:</p>
+<ul>
+  <li><strong>QoS 0:</strong> tenta entregar uma vez; pode se perder;</li>
+  <li><strong>QoS 1:</strong> garante que chegue, mas pode entregar duas vezes;</li>
+  <li><strong>QoS 2:</strong> garante uma única entrega, mas dá mais trabalho e usa mais comunicação.</li>
+</ul>
+<p>O <strong>Node-RED</strong> é como uma mesa de montagem com pecinhas ligadas por caminhos. O <strong>MQTT in</strong> pega as mensagens, o <strong>Function</strong> pensa e faz contas, e o <strong>MQTT out</strong> envia uma resposta ou um comando. O <strong>Dashboard</strong> mostra tudo na tela: o <strong>Gauge</strong> mostra o valor de agora, o <strong>Chart</strong> mostra o que aconteceu ao longo do tempo, o <strong>Text</strong> escreve informações, o <strong>Filter</strong> escolhe o que queremos ver, o <strong>Debug</strong> ajuda a descobrir erros e o <strong>Telegram</strong> avisa alguém quando há um problema.</p>
+<p>A <strong>nuvem</strong> é como um grande computador na Internet. Ela pode guardar o histórico, conferir se o dispositivo é autorizado, aplicar regras e mostrar os dados em outros programas. Se alguém mandar um comando, ele volta pelo caminho contrário até o dispositivo ou atuador.</p>
+<p><strong>Resumo da história:</strong> o sensor mede → o ESP32 organiza → o JSON descreve → o MQTT transporta → o broker distribui → o Node-RED trata → a tela mostra ou o Telegram avisa → a nuvem guarda. Um comando pode voltar pela mesma estrada.</p>
+</div>
 
 <h2>1. ESP32 × Arduino Uno</h2>
 <table><thead><tr><th>Característica</th><th>ESP32</th><th>Arduino Uno</th></tr></thead><tbody>
