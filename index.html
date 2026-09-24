@@ -21,10 +21,11 @@
   }
   :root[data-theme="dracula"] {
     color-scheme:dark;
-    --blue:#bd93f9; --cyan:#343044; --gold:#453c2b; --ink:#f8f8f2; --muted:#c2bfd0; --line:#49445b;
-    --page-bg:#191622; --surface:#282536; --stripe:#302d40; --code-bg:#39364a;
-    --pre-bg:#171520; --pre-ink:#f8f8f2; --simple-bg:#302d40; --simple-border:#bd93f9;
-    --fast-bg:#29352f; --fast-border:#50fa7b; --table-head:#44405a; --table-head-ink:#f8f8f2;
+    --blue:#bd93f9; --cyan:#8be9fd; --gold:#44475a; --ink:#f8f8f2; --muted:#f8f8f2; --line:#44475a;
+    --page-bg:#282a36; --surface:#282a36; --stripe:#44475a; --code-bg:#44475a;
+    --pre-bg:#44475a; --pre-ink:#f8f8f2; --simple-bg:#282a36; --simple-border:#bd93f9;
+    --fast-bg:#282a36; --fast-border:#50fa7b; --table-head:#44475a; --table-head-ink:#f8f8f2;
+    --priority-border:#ffb86c; --quote-bg:#44475a; --quote-border:#8be9fd;
   }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--page-bg); color:var(--ink); font-family:Arial,Helvetica,sans-serif; line-height:1.45; transition:background-color .2s,color .2s; }
@@ -36,14 +37,14 @@
   h2 { color:var(--blue); border-bottom:2px solid var(--blue); padding-bottom:5px; margin-top:2.2rem; }
   h3 { color:var(--blue); margin-bottom:.25rem; }
   .meta { color:var(--muted); border-left:4px solid #67b7d3; padding-left:12px; }
-  .priority { background:var(--gold); border-left:5px solid #d69e2e; padding:10px 14px; margin:12px 0; }
+  .priority { background:var(--gold); border-left:5px solid var(--priority-border, #d69e2e); padding:10px 14px; margin:12px 0; }
   table { width:100%; border-collapse:collapse; margin:12px 0 18px; font-size:.94rem; }
   th { background:var(--table-head); color:var(--table-head-ink); text-align:left; }
   th,td { border:1px solid var(--line); padding:8px 9px; vertical-align:top; }
   tr:nth-child(even) td { background:var(--stripe); }
   code { background:var(--code-bg); padding:1px 4px; border-radius:3px; }
   pre { background:var(--pre-bg); color:var(--pre-ink); padding:14px; border-radius:5px; overflow:auto; }
-  blockquote { background:var(--cyan); border-left:5px solid #3294bd; margin:16px 0; padding:12px 16px; }
+  blockquote { background:var(--quote-bg, var(--cyan)); border-left:5px solid var(--quote-border, #3294bd); margin:16px 0; padding:12px 16px; }
   .fast { background:var(--fast-bg); border:2px solid var(--fast-border); padding:12px 18px; }
   .simple { background:var(--simple-bg); border:2px solid var(--simple-border); padding:14px 18px; }
   li { margin:5px 0; }
