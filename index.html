@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revisão para prova — IoT</title>
+<style>
+  :root { --blue:#124e78; --cyan:#eaf6fb; --gold:#fff3cd; --ink:#20252b; --muted:#5f6b76; --line:#d9e1e8; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#eef2f5; color:var(--ink); font-family:Arial,Helvetica,sans-serif; line-height:1.45; }
+  main { max-width:980px; margin:28px auto; background:#fff; padding:42px 52px 56px; box-shadow:0 2px 18px #0002; }
+  h1 { color:var(--blue); margin-top:0; font-size:2.2rem; }
+  h2 { color:var(--blue); border-bottom:2px solid var(--blue); padding-bottom:5px; margin-top:2.2rem; }
+  h3 { color:#1b6a95; margin-bottom:.25rem; }
+  .meta { color:var(--muted); border-left:4px solid #67b7d3; padding-left:12px; }
+  .priority { background:var(--gold); border-left:5px solid #d69e2e; padding:10px 14px; margin:12px 0; }
+  table { width:100%; border-collapse:collapse; margin:12px 0 18px; font-size:.94rem; }
+  th { background:var(--blue); color:#fff; text-align:left; }
+  th,td { border:1px solid var(--line); padding:8px 9px; vertical-align:top; }
+  tr:nth-child(even) td { background:#f7fafc; }
+  code { background:#eef3f6; padding:1px 4px; border-radius:3px; }
+  pre { background:#172b3a; color:#f5fbff; padding:14px; border-radius:5px; overflow:auto; }
+  blockquote { background:var(--cyan); border-left:5px solid #3294bd; margin:16px 0; padding:12px 16px; }
+  .fast { background:#f0fbf4; border:2px solid #70b989; padding:12px 18px; }
+  li { margin:5px 0; }
+  @media print { body { background:#fff; } main { box-shadow:none; margin:0; max-width:none; padding:20px; } h2 { break-after:avoid; } table,pre,.priority,.fast { break-inside:avoid; } }
+</style>
+</head>
+<body><main>
+<h1>Revisão para prova — IoT, ESP32, Arduino e Node-RED</h1>
+<p class="meta"><strong>Aluno:</strong> Leandro Araujo<br><strong>Base:</strong> APS 01 — comparação ESP32 × Arduino Uno; APS 02 — conceitos gerais de IoT.</p>
+<p>Os itens marcados como <strong>PRIORIDADE</strong> concentram as relações mais importantes para a prova.</p>
+
+<h2>1. ESP32 × Arduino Uno</h2>
+<table><thead><tr><th>Característica</th><th>ESP32</th><th>Arduino Uno</th></tr></thead><tbody>
+<tr><td>Microcontrolador</td><td>Xtensa LX6 dual-core, até 240 MHz</td><td>ATmega328P, 8 bits, 16 MHz</td></tr>
+<tr><td>Memória</td><td>Flash comum de 4 MB; SRAM ~520 KB; ROM interna</td><td>Flash 32 KB; SRAM 2 KB; EEPROM 1 KB</td></tr>
+<tr><td>Sistema operacional</td><td>Pode usar FreeRTOS via ESP-IDF</td><td>Normalmente executa o programa diretamente, sem SO</td></tr>
+<tr><td>GPIO e recursos</td><td>Até 34 GPIOs; ADC, PWM e touch</td><td>14 digitais, 6 analógicas e 6 PWM</td></tr>
+<tr><td>Comunicação serial</td><td>UART, SPI e I2C</td><td>UART, SPI e I2C</td></tr>
+<tr><td>Rede</td><td>Wi-Fi 2,4 GHz e Bluetooth/BLE integrados</td><td>Sem rede nativa; exige módulo externo</td></tr>
+<tr><td>Alimentação</td><td>3,3 V; consumo varia com Wi-Fi/Bluetooth</td><td>5 V; consumo mais previsível</td></tr>
+<tr><td>Economia de energia</td><td>Modem sleep, light sleep e deep sleep</td><td>Idle, power-down e outros modos</td></tr>
+<tr><td>Desenvolvimento</td><td>Arduino IDE, PlatformIO ou ESP-IDF</td><td>Arduino IDE ou PlatformIO</td></tr>
+<tr><td>Linguagem</td><td>C/C++</td><td>C/C++</td></tr>
+<tr><td>Segurança</td><td>Secure Boot, criptografia de flash e recursos criptográficos</td><td>Segurança nativa mais limitada</td></tr>
+</tbody></table>
+<div class="priority"><strong>PRIORIDADE:</strong> ESP32 é melhor para IoT conectada por ter mais desempenho, memória e Wi-Fi/Bluetooth nativos. Uno é mais simples e adequado a aprendizagem e projetos locais. Atenção às tensões: ESP32 = 3,3 V; Uno = 5 V.</div>
+<p><strong>Não confunda:</strong> UART, SPI e I2C são interfaces de comunicação entre componentes; não significam conexão à Internet. A rede do ESP32 vem do Wi-Fi/Bluetooth.</p>
+
+<h2>2. Fundamentos de IoT</h2>
+<p>IoT integra <strong>sensores/atuadores, processamento, comunicação e serviços</strong> para medir o mundo físico, transmitir dados, tomar decisões e agir sobre o ambiente.</p>
+
+<h2>3. MQTT, HTTP e Pub/Sub</h2>
+<h3>MQTT — PRIORIDADE MÁXIMA</h3>
+<p>MQTT é um protocolo leve de mensagens para IoT, normalmente sobre TCP/IP. Usa <strong>publicação/assinatura</strong> e é adequado a dispositivos com pouca banda, energia ou processamento.</p>
+<h3>Broker</h3>
+<p>O broker é o servidor intermediário: recebe mensagens dos publicadores, verifica assinaturas e encaminha os dados aos assinantes. Assim, sensor e aplicações ficam desacoplados.</p>
+<ul><li><strong>Publisher:</strong> publica em um tópico.</li><li><strong>Subscriber:</strong> assina um tópico.</li><li><strong>Broker:</strong> distribui mensagens.</li><li><strong>Tópico:</strong> endereço lógico da mensagem.</li></ul>
+<p>Exemplo: o ESP32 publica em <code>casa/sala01/temperatura</code>; dashboard e alertas assinam esse tópico.</p>
+<table><thead><tr><th>MQTT</th><th>HTTP</th></tr></thead><tbody><tr><td>Pub/Sub e broker; leve para telemetria contínua; usa tópicos.</td><td>Requisição/resposta; cliente acessa servidor/API; usa GET/POST.</td></tr></tbody></table>
+<p><strong>Regra prática:</strong> telemetria e comandos entre dispositivos favorecem MQTT; integração pontual com API web costuma usar HTTP.</p>
+
+<h2>4. Tópicos, JSON e QoS</h2>
+<h3>Padronização de tópicos — PRIORIDADE</h3>
+<p>Use hierarquia consistente com níveis separados por <code>/</code>: <code>casa/sala01/temperatura</code>, <code>fabrica/linha2/motor07/status</code>, <code>predio/3oandar/umidade</code>. Isso facilita localizar, filtrar e autorizar dados.</p>
+<h3>JSON</h3>
+<p>JSON é estruturado e legível, com pares chave/valor:</p>
+<pre>{
+  "dispositivo": "dht11-01",
+  "temperatura": 24.6,
+  "umidade": 58,
+  "timestamp": "2026-09-10T19:00:00Z"
+}</pre>
+<p>Ele padroniza a troca entre microcontrolador, Node-RED, nuvem e aplicações.</p>
+<h3>QoS — PRIORIDADE MÁXIMA</h3>
+<table><thead><tr><th>Nível</th><th>Significado</th></tr></thead><tbody><tr><td>QoS 0</td><td>No máximo uma vez; pode não chegar.</td></tr><tr><td>QoS 1</td><td>Pelo menos uma vez; pode duplicar.</td></tr><tr><td>QoS 2</td><td>Exatamente uma vez; maior custo.</td></tr></tbody></table>
+<p><strong>Memorização:</strong> 0 = pode perder; 1 = pode repetir; 2 = exatamente uma vez.</p>
+
+<h2>5. Brokers/plataformas e sensor</h2>
+<ul><li><strong>AWS IoT Core:</strong> broker MQTT gerenciado e integração com serviços AWS.</li><li><strong>Azure IoT Hub:</strong> identidade, comunicação e telemetria de dispositivos no Azure.</li><li><strong>EMQX:</strong> broker MQTT escalável, próprio ou em nuvem.</li></ul>
+<p><strong>DHT11:</strong> sensor digital barato de temperatura e umidade relativa. É simples e econômico, porém menos preciso e veloz que sensores avançados. No fluxo, ele gera a telemetria que o microcontrolador transforma em JSON.</p>
+
+<h2>6. Node-RED</h2>
+<p>Node-RED é uma ferramenta visual baseada em fluxos, executada sobre Node.js.</p>
+<table><thead><tr><th>Nó</th><th>Função</th></tr></thead><tbody>
+<tr><td><strong>MQTT in</strong></td><td>Assina tópico e recebe mensagens; conteúdo costuma estar em <code>msg.payload</code>.</td></tr>
+<tr><td><strong>MQTT out</strong></td><td>Publica dados ou comandos em um tópico.</td></tr>
+<tr><td><strong>Function</strong></td><td>Executa JavaScript para validar, calcular, transformar e encaminhar.</td></tr>
+<tr><td><strong>Sender Telegram</strong></td><td>Envia alertas por bot.</td></tr>
+<tr><td><strong>Dashboard</strong></td><td>Interface visual de dados e controles.</td></tr>
+<tr><td><strong>Gauge</strong></td><td>Valor instantâneo em escala.</td></tr>
+<tr><td><strong>Chart</strong></td><td>Histórico, tendência e anomalias.</td></tr>
+<tr><td><strong>Text</strong></td><td>Rótulos, estados, mensagens e valores.</td></tr>
+<tr><td><strong>Filter</strong></td><td>Restringe dados por período, dispositivo, tópico ou condição.</td></tr>
+<tr><td><strong>Debug</strong></td><td>Diagnóstico de payload, tópicos e erros.</td></tr>
+</tbody></table>
+<p><strong>Sequência mental:</strong> MQTT in → Function → visualizações/Telegram/MQTT out; Debug acompanha os testes.</p>
+
+<h2>7. Fluxo Client/Edge → Cloud Back-End</h2>
+<ol><li><strong>Client:</strong> DHT11 mede temperatura e umidade.</li><li><strong>Microcontrolador:</strong> lê o sensor e monta um JSON.</li><li><strong>Publicação:</strong> publica o JSON em um tópico MQTT.</li><li><strong>Edge/Broker:</strong> broker recebe; Node-RED usa MQTT in.</li><li><strong>Processamento:</strong> Function valida e transforma <code>msg.payload</code>.</li><li><strong>Uso local:</strong> Dashboard, Gauge, Chart, Text e Filter exibem; Debug testa; Telegram alerta.</li><li><strong>Cloud:</strong> autentica dispositivo, aplica regras, armazena histórico e oferece APIs/dashboards.</li><li><strong>Controle:</strong> Cloud → broker → MQTT out → dispositivo/atuador.</li></ol>
+<p class="priority"><strong>Fluxo em uma linha:</strong> DHT11 → ESP32 → JSON → MQTT → Broker → MQTT in → Function → Dashboard/Alertas/Armazenamento → comando via MQTT out.</p>
+
+<h2>8. Perguntas que podem cair</h2>
+<ol><li>Por que o ESP32 é mais indicado para IoT? Mais desempenho, memória e conectividade nativa.</li><li>Qual o papel do broker? Intermediar/distribuir mensagens.</li><li>MQTT × HTTP? Pub/Sub/broker × requisição/resposta.</li><li>QoS 1? Pelo menos uma vez, podendo duplicar.</li><li>Para que serve o tópico? Organizar/identificar o canal lógico.</li><li>Function? Lógica JavaScript para validar/transformar/encaminhar.</li><li>Quem recebe/publica MQTT? MQTT in recebe; MQTT out publica.</li><li>Gauge × Chart? Valor atual × evolução no tempo.</li></ol>
+
+<h2>Revisão de 5 minutos antes da prova</h2>
+<div class="fast">
+<p><strong>Placas:</strong> ESP32 = dual-core, mais memória, Wi-Fi/Bluetooth, 3,3 V. Uno = ATmega328P, 8 bits/16 MHz, pouca memória, 5 V, simples e sem rede nativa.</p>
+<p><strong>MQTT:</strong> Publisher publica → broker intermedeia → subscriber assina.</p>
+<p><strong>QoS:</strong> 0 pode perder; 1 pode repetir; 2 exatamente uma vez.</p>
+<p><strong>Node-RED:</strong> MQTT in recebe; Function processa; MQTT out publica. Gauge = agora; Chart = histórico; Debug = diagnóstico; Telegram = alerta.</p>
+<p><strong>Arquitetura:</strong> DHT11 mede → ESP32 monta JSON → MQTT → broker → Node-RED → dashboard/alerta/nuvem. O comando volta por Cloud → broker → MQTT out → atuador.</p>
+<blockquote>Em IoT, o sensor gera dados, o microcontrolador organiza, o MQTT transporta, o broker distribui, o Node-RED processa e a nuvem armazena/coordena; comandos retornam pelo mesmo ecossistema até o atuador.</blockquote>
+</div>
+</main></body></html>
