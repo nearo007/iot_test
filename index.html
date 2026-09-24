@@ -262,7 +262,7 @@
     function setMenuOpen(isOpen) {
       button.setAttribute("aria-expanded", String(isOpen));
       menu.hidden = !isOpen;
-      if (isOpen) document.getElementById("search-close").click();
+      if (isOpen) document.dispatchEvent(new Event("close-page-search"));
     }
     button.addEventListener("click", () => setMenuOpen(menu.hidden));
     menu.addEventListener("click", event => {
@@ -353,6 +353,7 @@
       count.textContent = "0/0";
     }
 
+    document.addEventListener("close-page-search", closeSearch);
     toggle.addEventListener("click", () => panel.hidden ? openSearch() : closeSearch());
     input.addEventListener("input", search);
     document.getElementById("search-prev").addEventListener("click", () => focusHit(current - 1));
